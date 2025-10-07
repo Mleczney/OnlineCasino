@@ -1,8 +1,40 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Online Casino";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5 text-center">
+    <h1 class="display-3 text-warning">Welcome to Nex Comet Casino</h1>
+    <p class="lead text-light">If youre about to give up, what if the next bet will be jackpot?!</p>
+
+    <div class="row mt-5">
+        <div class="col-md-4 mb-3">
+            <div class="card bg-dark text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Players</h5>
+                    <p class="card-text">Check all registered players and manage accounts.</p>
+                    <a asp-controller="Players" asp-action="Index" class="btn btn-warning">Go to Players</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card bg-dark text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Games</h5>
+                    <p class="card-text">Browse all available games and place your bets.</p>
+                    <a asp-controller="Games" asp-action="Index" class="btn btn-warning">Go to Games</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card bg-dark text-white h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Bets</h5>
+                    <p class="card-text">Track all bets and game results.</p>
+                    <a asp-controller="Bets" asp-action="Index" class="btn btn-warning">Go to Bets</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
