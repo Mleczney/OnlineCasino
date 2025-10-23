@@ -10,14 +10,9 @@ using OnlineCasino.Models;
 
 namespace OnlineCasino.Controllers
 {
-    public class GamesController : Controller
+    public class GamesController(CasinoContext context) : Controller
     {
-        private readonly CasinoContext _context;
-
-        public GamesController(CasinoContext context)
-        {
-            _context = context;
-        }
+        private readonly CasinoContext _context = context;
 
         // GET: Games
         public async Task<IActionResult> Index()

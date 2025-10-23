@@ -1,39 +1,43 @@
 ﻿@model OnlineCasino.Models.Bet
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Bet";
 }
 
-<h1>Create</h1>
+<h1>Create New Bet</h1>
 
 <h4>Bet</h4>
 <hr />
+
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6 col-lg-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PlayerId" class="control-label"></label>
-                <select asp-for="PlayerId" class ="form-control" asp-items="ViewBag.PlayerId"></select>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="PlayerId" class="form-label"></label>
+                <select asp-for="PlayerId" class="form-select" asp-items="ViewBag.PlayerId"></select>
+                <span asp-validation-for="PlayerId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="GameId" class="control-label"></label>
-                <select asp-for="GameId" class ="form-control" asp-items="ViewBag.GameId"></select>
+
+            <div class="form-group mb-3">
+                <label asp-for="GameId" class="form-label"></label>
+                <select asp-for="GameId" class="form-select" asp-items="ViewBag.GameId"></select>
+                <span asp-validation-for="GameId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Amount" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="Amount" class="form-label"></label>
                 <input asp-for="Amount" class="form-control" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
