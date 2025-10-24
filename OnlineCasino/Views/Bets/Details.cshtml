@@ -1,36 +1,22 @@
 ﻿@model OnlineCasino.Models.Bet
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Bet Details";
 }
 
-<h1>Details</h1>
+<h1>Bet Details</h1>
+<hr />
 
-<div>
-    <h4>Bet</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Amount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Amount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Player)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Player.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Game)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Game.Id)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<dl class="row">
+    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Amount)</dt>
+    <dd class="col-sm-10">@Html.DisplayFor(model => model.Amount)</dd>
+
+    <dt class="col-sm-2">Player ID</dt>
+    <dd class="col-sm-10">@Model.Player?.Id ?? 0</dd>
+
+    <dt class="col-sm-2">Game ID</dt>
+    <dd class="col-sm-10">@Model.Game?.Id ?? 0</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+<a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>

@@ -1,6 +1,21 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container mt-5">
+    <div class="card bg-dark text-light p-4 shadow-lg">
+        <h1 class="fw-bold text-warning mb-3">@ViewData["Title"]</h1>
+        <p class="fs-5">
+            Use this page to detail your site's privacy policy. Ensure that your users feel secure and informed about how their data is collected, used, and protected.
+        </p>
+        <ul class="fs-5">
+            <li>We do not share your personal information with third parties.</li>
+            <li>All payment data is securely encrypted.</li>
+            <li>Users have full control over their account information.</li>
+            <li>Cookies are used solely for improving user experience.</li>
+        </ul>
+        <a asp-action="Index" class="btn btn-warning mt-3">
+            <i class="bi bi-arrow-left"></i> Back to Home
+        </a>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+@model IEnumerable<OnlineCasino.Models.Player>
+
+@{
+    ViewData["Title"] = "Players";
+}
+
+<h1>Players</h1>
+<hr />
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Player</a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            {{-- FIX 1: Cast model to IEnumerable<Player> to resolve 'First()' error.
+                     FIX 2: Assuming 'Name' is a correct property, if not, change 'Name' to 'UserName' or 'FullName'. --}}
+            <th>@Html.DisplayNameFor(model => ((IEnumerable<OnlineCasino.Models.Player>)model).First().Username)</th>
+            <th>@Html.DisplayNameFor(model => ((IEnumerable<OnlineCasino.Models.Player>)model).First().Balance)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var player in Model)
+    {
+        <tr>
+            {{-- FIX 3: Assuming 'Name' is the correct property. If not, change 'Name' to the actual property name (e.g., 'UserName'). --}}
+            <td>@Html.DisplayFor(modelItem => player.Username)</td>
+            <td>@Html.DisplayFor(modelItem => player.Balance)</td>
+            <td>
+                {{-- FIX 4: Corrected the broken and incomplete HTML for action links. --}}
+                <a asp-action="DepositBalance" asp-route-id="@player.Id" class="btn btn-sm btn-success">Deposit</a>
+                <a asp-action="Details" asp-route-id="@player.Id" class="btn btn-sm btn-info ms-1">Details</a>
+                <a asp-action="Edit" asp-route-id="@player.Id" class="btn btn-sm btn-warning ms-1">Edit</a>
+                <a asp-action="Delete" asp-route-id="@player.Id" class="btn btn-sm btn-danger ms-1">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
