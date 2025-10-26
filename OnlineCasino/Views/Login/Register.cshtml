@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Registrace";
+}
+
+<h2>🧾 Registrace</h2>
+<form method="post">
+    <div><label>Uživatelské jméno:</label><input name="username" required /></div>
+    <div><label>Heslo:</label><input type="password" name="password" required /></div>
+    <button type="submit">Registrovat</button>
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <p>@ViewBag.Message</p>
+}

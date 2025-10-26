@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Výsledek sázky";
+}
+
+<h2>🎯 Výsledek sázky</h2>
+
+<p>Tvůj tip: <strong>@ViewBag.Guess</strong></p>
+<p>Padlo číslo: <strong>@ViewBag.Rolled</strong></p>
+
+@if (ViewBag.Win)
+{
+    <h3 style="color:green;">🔥 Vyhrál jsi! Získáváš @ViewBag.Result Kč!</h3>
+}
+else
+{
+    <h3 style="color:red;">💀 Prohrál jsi. Přišel jsi o @ViewBag.Amount Kč.</h3>
+}
+
+<hr />
+
+<p>💰 Aktuální zůstatek: <strong>@ViewBag.NewBalance Kč</strong></p>
+
+<a asp-action="Play" class="btn btn-success mt-2">Hrát znovu 🎮</a>
+<a asp-action="Index" class="btn btn-secondary mt-2">Zpět na přehled sázek</a>

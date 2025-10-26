@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using OnlineCasino.Controllers
+@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,48 +14,100 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons">
 </head>
-<body class="bg-dark">
+
+<body class="bg-dark text-light">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlineCasino</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Bets" asp-action="Index">Bets</a>
-                        </li>
+
+                        @* Viditelné pro přihlášené hráče i adminy *@
+                        @if (Context.Session.GetInt32("PlayerId") != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Bets" asp-action="Play">🎲 Sázka</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="BalanceDeposit" asp-action="DepositBalance">💳 Dobít účet</a>
+                            </li>
+                        }
+
+                        @* ADMIN zóna — viditelné jen pokud je role Admin *@
+                        @if (Context.Session.GetString("Role") == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="" asp-controller="Players" asp-action="Index">Players 🛠️</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="" asp-controller="Games" asp-action="Index">Games 🛠️</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" asp-area="" asp-controller="Bets" asp-action="Index">Bets 🛠️</a>
+                            </li>
+                        }
+
                     </ul>
+
+                    <ul class="navbar-nav">
+                        @if (Context.Session.GetInt32("PlayerId") != null)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-success">
+                                    👤 <strong>@Context.Session.GetString("Username")</strong>
+
+                                    @if (Context.Session.GetString("Role") == "Admin")
+                                    {
+                                        <span class="badge bg-warning text-dark ms-1">ADMIN</span>
+                                    }
+
+                                    | 💰 <strong>@Context.Session.GetDecimal("Balance") Kč</strong>
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" asp-controller="Login" asp-action="Logout">Odhlásit</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Login">Přihlásit</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Register">Registrovat</a>
+                            </li>
+                        }
+                    </ul>
+
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted bg-white text-center py-2">
         <div class="container">
-            &copy; 2025 - OnlineCasino - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - OnlineCasino -
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

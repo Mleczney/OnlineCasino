@@ -6,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSession();
+
+
 builder.Services.AddDbContext<CasinoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CasinoContext")));
 
@@ -26,6 +29,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

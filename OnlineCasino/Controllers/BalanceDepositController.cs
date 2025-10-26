@@ -1,56 +1,73 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using OnlineCasino.Data;
 using OnlineCasino.Models;
 
 namespace OnlineCasino.Controllers
 {
     public class BalanceDepositController : Controller
     {
-        private readonly ILogger<BalanceDepositController> _logger;
+        private readonly CasinoContext _context;
 
-        // Simulace databáze (v reálné aplikaci by se použila služba nebo DbContext)
-        private static List<Player> _players = new List<Player>
+        public BalanceDepositController(CasinoContext context)
         {
-            new Player { Id = 1, Username = "Tomáš", Balance = 100.00m },
-            new Player { Id = 2, Username = "Anna", Balance = 250.50m }
-        };
-
-        public BalanceDepositController(ILogger<BalanceDepositController> logger)
-        {
-            _logger = logger;
+            _context = context;
         }
 
+        // GET: BalanceDeposit/DepositBalance
         [HttpGet]
-        public IActionResult DepositBalance(int id)
+        public IActionResult DepositBalance()
         {
-            var player = _players.FirstOrDefault(p => p.Id == id);
-            if (player == null)
+            var playerId = HttpContext.Session.GetInt32("PlayerId");
+            if (playerId == null)
             {
-                return NotFound();
+                return RedirectToAction("Login", "Login");
             }
 
-            return View(player);
-        }
-
-        [HttpPost]
-        public IActionResult DepositBalance(int id, decimal depositAmount)
-        {
-            var player = _players.FirstOrDefault(p => p.Id == id);
+            var player = _context.Players.Find(playerId.Value);
             if (player == null)
             {
-                return NotFound();
+                return RedirectToAction("Login", "Login");
+            }
+
+            ViewBag.Username = player.Username;
+            ViewBag.CurrentBalance = player.Balance;
+            return View();
+        }
+
+        // POST: BalanceDeposit/DepositBalance
+        [HttpPost]
+        public async Task<IActionResult> DepositBalance(decimal depositAmount)
+        {
+            var playerId = HttpContext.Session.GetInt32("PlayerId");
+            if (playerId == null)
+            {
+                return RedirectToAction("Login", "Login");
             }
 
             if (depositAmount <= 0)
             {
-                ModelState.AddModelError("", "Částka musí být větší než 0.");
-                return View(player);
+                ViewBag.Message = "Částka musí být větší než 0 💸";
+                return View();
             }
 
-            player.Balance += depositAmount;
-            _logger.LogInformation($"Hráč {player.Username} vložil {depositAmount}. Nový zůstatek: {player.Balance}");
+            var player = await _context.Players.FindAsync(playerId.Value);
+            if (player == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
 
-            return RedirectToAction("DepositBalance", new { id = player.Id });
+            // 💰 Přičti částku
+            player.Balance += depositAmount;
+            await _context.SaveChangesAsync();
+
+            // 🔁 Aktualizuj Session, aby se hned zobrazil nový balance v navbaru
+            HttpContext.Session.SetDecimal("Balance", player.Balance);
+
+            ViewBag.Message = $"✅ Úspěšně připsáno {depositAmount} Kč!";
+            ViewBag.Username = player.Username;
+            ViewBag.CurrentBalance = player.Balance;
+
+            return View();
         }
     }
 }

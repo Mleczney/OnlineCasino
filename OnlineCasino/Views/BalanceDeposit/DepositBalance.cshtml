@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Dobití účtu";
+}
+
+<h2>💳 Dobití účtu</h2>
+
+@if (ViewBag.Username != null)
+{
+    <p>👤 Přihlášen jako: <strong>@ViewBag.Username</strong></p>
+    <p>💰 Aktuální zůstatek: <strong>@ViewBag.CurrentBalance Kč</strong></p>
+}
+
+<form method="post" asp-action="DepositBalance">
+    <div class="mb-3">
+        <label for="depositAmount" class="form-label">Částka k dobití:</label>
+        <input type="number" step="0.01" min="1" name="depositAmount" id="depositAmount" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-success">Dobít 💰</button>
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info mt-3">@ViewBag.Message</div>
+}

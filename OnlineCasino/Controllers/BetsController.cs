@@ -166,5 +166,84 @@ namespace OnlineCasino.Controllers
         {
             return _context.Bets.Any(e => e.Id == id);
         }
+
+        // === MINI SÁZECÍ HRA ===
+        [HttpGet]
+        public IActionResult Play()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Play(decimal amount, int guess)
+        {
+            var playerId = HttpContext.Session.GetInt32("PlayerId");
+            if (playerId == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
+            if (amount <= 0)
+            {
+                ViewBag.Message = "Zadej kladnou částku 😅";
+                return View();
+            }
+
+            // Najdeme hráče v DB
+            var player = await _context.Players.FindAsync(playerId.Value);
+            if (player == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
+            // Ověření, že má dost peněz
+            if (player.Balance < amount)
+            {
+                ViewBag.Message = "Nemáš dostatek kreditu 💀";
+                return View();
+            }
+
+            // Hra – náhodné číslo
+            var random = new Random();
+            int rolled = random.Next(1, 6); // 1–5
+            bool win = rolled == guess;
+
+            decimal result = 0;
+            if (win)
+            {
+                result = amount * 2;
+                player.Balance += result; // přičti výhru
+            }
+            else
+            {
+                player.Balance -= amount; // odečti prohranou sázku
+            }
+
+            // Ulož sázku do DB
+            var bet = new Bet
+            {
+                PlayerId = player.Id,
+                GameId = 1,
+                Amount = amount
+            };
+
+            _context.Bets.Add(bet);
+            await _context.SaveChangesAsync();
+
+            // 🔁 Aktualizuj session, aby se nový balance hned zobrazil v navbaru
+            HttpContext.Session.SetDecimal("Balance", player.Balance);
+
+            // Zobraz výsledek
+            ViewBag.Guess = guess;
+            ViewBag.Rolled = rolled;
+            ViewBag.Win = win;
+            ViewBag.Amount = amount;
+            ViewBag.Result = result;
+            ViewBag.NewBalance = player.Balance;
+
+            return View("Result");
+        }
+
+
     }
 }
