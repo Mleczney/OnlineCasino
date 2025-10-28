@@ -13,14 +13,12 @@ namespace OnlineCasino.Controllers
             _context = context;
         }
 
-        // GET: Login/Register
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
-        // POST: Login/Register
         [HttpPost]
         public IActionResult Register(string username, string password)
         {
@@ -44,14 +42,12 @@ namespace OnlineCasino.Controllers
             return RedirectToAction("Login");
         }
 
-        // GET: Login/Login
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: Login/Login
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
@@ -78,7 +74,6 @@ namespace OnlineCasino.Controllers
         }
     }
 
-    // Rozšíření, aby šlo uložit decimal do session
     public static class SessionExtensions
     {
         public static void SetDecimal(this ISession session, string key, decimal value)

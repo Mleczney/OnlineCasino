@@ -19,14 +19,12 @@ namespace OnlineCasino.Controllers
             _context = context;
         }
 
-        // GET: Bets
         public async Task<IActionResult> Index()
         {
             var casinoContext = _context.Bets.Include(b => b.Game).Include(b => b.Player);
             return View(await casinoContext.ToListAsync());
         }
 
-        // GET: Bets/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,7 +44,6 @@ namespace OnlineCasino.Controllers
             return View(bet);
         }
 
-        // GET: Bets/Create
         public IActionResult Create()
         {
             ViewData["GameId"] = new SelectList(_context.Games, "Id", "Id");
@@ -54,9 +51,6 @@ namespace OnlineCasino.Controllers
             return View();
         }
 
-        // POST: Bets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,PlayerId,GameId,Amount")] Bet bet)
@@ -72,7 +66,6 @@ namespace OnlineCasino.Controllers
             return View(bet);
         }
 
-        // GET: Bets/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,9 +83,6 @@ namespace OnlineCasino.Controllers
             return View(bet);
         }
 
-        // POST: Bets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,PlayerId,GameId,Amount")] Bet bet)
@@ -127,7 +117,6 @@ namespace OnlineCasino.Controllers
             return View(bet);
         }
 
-        // GET: Bets/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,7 +136,6 @@ namespace OnlineCasino.Controllers
             return View(bet);
         }
 
-        // POST: Bets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -167,7 +155,6 @@ namespace OnlineCasino.Controllers
             return _context.Bets.Any(e => e.Id == id);
         }
 
-        // === MINI SÁZECÍ HRA ===
         [HttpGet]
         public IActionResult Play()
         {
@@ -189,37 +176,33 @@ namespace OnlineCasino.Controllers
                 return View();
             }
 
-            // Najdeme hráče v DB
             var player = await _context.Players.FindAsync(playerId.Value);
             if (player == null)
             {
                 return RedirectToAction("Login", "Login");
             }
 
-            // Ověření, že má dost peněz
             if (player.Balance < amount)
             {
                 ViewBag.Message = "Nemáš dostatek kreditu 💀";
                 return View();
             }
 
-            // Hra – náhodné číslo
             var random = new Random();
-            int rolled = random.Next(1, 6); // 1–5
+            int rolled = random.Next(1, 6);
             bool win = rolled == guess;
 
             decimal result = 0;
             if (win)
             {
                 result = amount * 2;
-                player.Balance += result; // přičti výhru
+                player.Balance += result;
             }
             else
             {
-                player.Balance -= amount; // odečti prohranou sázku
+                player.Balance -= amount;
             }
 
-            // Ulož sázku do DB
             var bet = new Bet
             {
                 PlayerId = player.Id,
@@ -230,10 +213,8 @@ namespace OnlineCasino.Controllers
             _context.Bets.Add(bet);
             await _context.SaveChangesAsync();
 
-            // 🔁 Aktualizuj session, aby se nový balance hned zobrazil v navbaru
             HttpContext.Session.SetDecimal("Balance", player.Balance);
 
-            // Zobraz výsledek
             ViewBag.Guess = guess;
             ViewBag.Rolled = rolled;
             ViewBag.Win = win;

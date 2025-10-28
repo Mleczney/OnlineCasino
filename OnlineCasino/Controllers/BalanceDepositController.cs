@@ -13,7 +13,6 @@ namespace OnlineCasino.Controllers
             _context = context;
         }
 
-        // GET: BalanceDeposit/DepositBalance
         [HttpGet]
         public IActionResult DepositBalance()
         {
@@ -34,7 +33,6 @@ namespace OnlineCasino.Controllers
             return View();
         }
 
-        // POST: BalanceDeposit/DepositBalance
         [HttpPost]
         public async Task<IActionResult> DepositBalance(decimal depositAmount)
         {
@@ -56,11 +54,9 @@ namespace OnlineCasino.Controllers
                 return RedirectToAction("Login", "Login");
             }
 
-            // 💰 Přičti částku
             player.Balance += depositAmount;
             await _context.SaveChangesAsync();
 
-            // 🔁 Aktualizuj Session, aby se hned zobrazil nový balance v navbaru
             HttpContext.Session.SetDecimal("Balance", player.Balance);
 
             ViewBag.Message = $"✅ Úspěšně připsáno {depositAmount} Kč!";

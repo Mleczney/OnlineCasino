@@ -33,7 +33,6 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
-                        @* Viditelné pro přihlášené hráče i adminy *@
                         @if (Context.Session.GetInt32("PlayerId") != null)
                         {
                             <li class="nav-item">
@@ -44,7 +43,6 @@
                             </li>
                         }
 
-                        @* ADMIN zóna — viditelné jen pokud je role Admin *@
                         @if (Context.Session.GetString("Role") == "Admin")
                         {
                             <li class="nav-item">
