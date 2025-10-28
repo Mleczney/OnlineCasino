@@ -156,10 +156,13 @@ namespace OnlineCasino.Controllers
         }
 
         [HttpGet]
+        [HttpGet]
         public IActionResult Play()
         {
+            ViewBag.Games = new SelectList(_context.Games, "Id", "Name");
             return View();
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Play(decimal amount, int guess)
@@ -203,12 +206,15 @@ namespace OnlineCasino.Controllers
                 player.Balance -= amount;
             }
 
+            int gameId = Convert.ToInt32(Request.Form["gameId"]);
+
             var bet = new Bet
             {
                 PlayerId = player.Id,
-                GameId = 1,
+                GameId = gameId,
                 Amount = amount
             };
+
 
             _context.Bets.Add(bet);
             await _context.SaveChangesAsync();

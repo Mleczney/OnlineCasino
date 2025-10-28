@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineCasino.Data;
 
@@ -10,9 +11,11 @@ using OnlineCasino.Data;
 namespace OnlineCasino.Migrations
 {
     [DbContext(typeof(CasinoContext))]
-    partial class CasinoContextModelSnapshot : ModelSnapshot
+    [Migration("20251028202642_UpdateGameModel")]
+    partial class UpdateGameModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,6 +57,12 @@ namespace OnlineCasino.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("MaxBet")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MinBet")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
