@@ -1,3 +1,4 @@
 # 🎰 Online Casino
 
-- TOME ZAČNI UŽ NECO DĚLAT ALE
+- Dobrá práce tome♥
+<img src="sex">
