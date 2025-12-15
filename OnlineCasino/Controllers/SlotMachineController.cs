@@ -60,7 +60,7 @@ namespace OnlineCasino.Controllers
                 }
 
                 // Generate random symbols for 3 reels
-                var random = new Random();
+                var random = Random.Shared;
                 string[] symbols = { "🍒", "🍋", "🍊", "🍇", "💎", "7️⃣", "🔔" };
                 
                 var reel1 = symbols[random.Next(symbols.Length)];
@@ -106,13 +106,13 @@ namespace OnlineCasino.Controllers
                 }
 
                 // Update player balance
+                // First deduct the bet
+                await _playerService.WithdrawAsync(playerId.Value, betAmount);
+                
+                // Then add winnings if any
                 if (isWin)
                 {
-                    await _playerService.DepositAsync(playerId.Value, winAmount - betAmount);
-                }
-                else
-                {
-                    await _playerService.WithdrawAsync(playerId.Value, betAmount);
+                    await _playerService.DepositAsync(playerId.Value, winAmount);
                 }
 
                 // Update session balance

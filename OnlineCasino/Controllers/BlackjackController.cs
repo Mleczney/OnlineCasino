@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCasino.Application.Interfaces;
-using OnlineCasino.Controllers;
 
 namespace OnlineCasino.Controllers
 {
@@ -285,7 +284,7 @@ namespace OnlineCasino.Controllers
 
         private void Shuffle(List<string> deck)
         {
-            var random = new Random();
+            var random = Random.Shared;
             int n = deck.Count;
             while (n > 1)
             {
@@ -311,7 +310,9 @@ namespace OnlineCasino.Controllers
 
             foreach (var card in cards)
             {
-                var rank = card.Substring(0, card.Length - 1);
+                // Extract rank by removing the last character (suit symbol)
+                // Handle multi-byte unicode characters properly
+                var rank = card[..^1];
 
                 if (rank == "A")
                 {
@@ -322,9 +323,9 @@ namespace OnlineCasino.Controllers
                 {
                     score += 10;
                 }
-                else
+                else if (int.TryParse(rank, out int cardValue))
                 {
-                    score += int.Parse(rank);
+                    score += cardValue;
                 }
             }
 
