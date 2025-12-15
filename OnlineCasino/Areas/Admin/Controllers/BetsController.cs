@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCasino.Application.Interfaces;
+using OnlineCasino.Application.DTOs;
 
 namespace OnlineCasino.Areas.Admin.Controllers
 {
@@ -18,7 +19,19 @@ namespace OnlineCasino.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var bets = await _betService.GetAllAsync();
-            return View(bets);
+            var betDtos = bets.Select(b => new BetDto
+            {
+                Id = b.Id,
+                PlayerId = b.PlayerId,
+                PlayerUsername = b.Player?.Username ?? "N/A",
+                GameId = b.GameId,
+                GameName = b.Game?.Name ?? "N/A",
+                Amount = b.Amount,
+                WinAmount = b.WinAmount,
+                IsWin = b.IsWin,
+                CreatedAt = b.CreatedAt
+            });
+            return View(betDtos);
         }
 
         public async Task<IActionResult> Details(int id)
