@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineCasino.Application.DTOs;
 using OnlineCasino.Application.Interfaces;
-using OnlineCasino.Infrastructure.Data;
 
 namespace OnlineCasino.Controllers
 {
