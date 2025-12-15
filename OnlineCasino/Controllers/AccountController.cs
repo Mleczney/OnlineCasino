@@ -92,19 +92,41 @@ namespace OnlineCasino.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Get player from custom table
-                    var player = await _playerService.GetByUsernameAsync(dto.Username);
-                    if (player != null)
+                    // Get the user to check roles
+                    var user = await _userManager.FindByNameAsync(dto.Username);
+                    if (user != null)
                     {
-                        HttpContext.Session.SetInt32("PlayerId", player.Id);
-                        HttpContext.Session.SetString("Username", player.Username);
-                        HttpContext.Session.SetString("Balance", player.Balance.ToString());
-
-                        // Check if user is admin
-                        var user = await _userManager.FindByNameAsync(dto.Username);
-                        if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                        // Check user roles and set session accordingly
+                        if (await _userManager.IsInRoleAsync(user, "Admin"))
                         {
+                            HttpContext.Session.SetString("Role", "Admin");
+                            HttpContext.Session.SetString("Username", dto.Username);
                             return RedirectToAction("Index", "Home", new { area = "Admin" });
+                        }
+                        else if (await _userManager.IsInRoleAsync(user, "Manager"))
+                        {
+                            HttpContext.Session.SetString("Role", "Manager");
+                            HttpContext.Session.SetString("Username", dto.Username);
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            // Get player from custom table for regular players
+                            var player = await _playerService.GetByUsernameAsync(dto.Username);
+                            if (player != null)
+                            {
+                                HttpContext.Session.SetInt32("PlayerId", player.Id);
+                                HttpContext.Session.SetString("Username", player.Username);
+                                HttpContext.Session.SetString("Balance", player.Balance.ToString());
+                                HttpContext.Session.SetString("Role", "Player");
+                            }
+                            else
+                            {
+                                // Player role but no player record - sign out and show error
+                                await _signInManager.SignOutAsync();
+                                ModelState.AddModelError(string.Empty, "Profil hráče nebyl nalezen. Kontaktujte administrátora.");
+                                return View(dto);
+                            }
                         }
                     }
 
@@ -117,9 +139,17 @@ namespace OnlineCasino.Controllers
             return View(dto);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> LogoutPost()
         {
             await _signInManager.SignOutAsync();
             HttpContext.Session.Clear();
