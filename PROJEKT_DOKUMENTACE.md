@@ -349,12 +349,24 @@ OnlineCasino/
 
 ### 9.2 Kroky
 1. Klonovat repozitář
-2. Nastavit connection string v `appsettings.json`
-3. Spustit migrace: `dotnet ef database update`
-4. Spustit aplikaci: `dotnet run`
-5. Přihlásit se jako admin (username: `admin`, heslo: `Admin123`)
+2. Přejít do složky projektu: `cd OnlineCasino/OnlineCasino`
+3. Obnovit balíčky: `dotnet restore`
+4. Nastavit connection string v `appsettings.json` (výchozí je LocalDB)
+5. Spustit migrace: `dotnet ef database update`
+   - **Poznámka**: Pokud databáze již existuje z předchozího pokusu, smazat ji: `dotnet ef database drop --force`
+6. Spustit aplikaci: `dotnet run`
+7. Přihlásit se jako admin (username: `admin`, heslo: `Admin123`)
 
-### 9.3 Testovací účty
+### 9.3 Řešení problémů
+
+#### Chyba při migraci: "There is already an object named 'AspNetRoles' in the database"
+Tato chyba nastává, když databáze již existuje z předchozího pokusu. Řešení:
+```bash
+dotnet ef database drop --force
+dotnet ef database update
+```
+
+### 9.4 Testovací účty
 - **Admin**: username: `admin`, heslo: `Admin123`
 - **Manager**: username: `manager`, heslo: `Manager123`
 - **Player**: Registrovat nového uživatele
