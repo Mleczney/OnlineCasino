@@ -1,0 +1,65 @@
+@{
+    ViewData["Title"] = "🃏 Blackjack";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-dark text-light border-danger">
+                <div class="card-header bg-danger text-white text-center">
+                    <h2>🃏 BLACKJACK</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5>📜 Pravidla:</h5>
+                        <ul>
+                            <li>Cílem je mít víc bodů než dealer, ale nepřekročit 21</li>
+                            <li>Karty 2-10 = hodnota karty</li>
+                            <li>J, Q, K = 10 bodů</li>
+                            <li>A (eso) = 11 nebo 1 bod</li>
+                            <li>Dealer tahá do 17 bodů</li>
+                            <li>Výhra = 2x sázka, Remíza = vrácení sázky</li>
+                        </ul>
+                    </div>
+
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-warning text-center">
+                            @ViewBag.Message
+                        </div>
+                    }
+
+                    <form method="post" asp-action="StartGame" class="mt-4">
+                        <div class="mb-3">
+                            <label class="form-label">Zadejte sázku (10 - 1000 Kč):</label>
+                            <input type="number" name="betAmount" class="form-control" min="10" max="1000" step="10" value="50" required />
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                🃏 ZAČÍT HRÁT
+                            </button>
+                        </div>
+
+                        @Html.AntiForgeryToken()
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <p class="text-muted">
+                            Váš zůstatek: <strong>@Context.Session.GetDecimal("Balance") Kč</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .card {
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.3);
+        }
+    </style>
+}

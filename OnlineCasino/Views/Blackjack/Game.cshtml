@@ -1,0 +1,125 @@
+@{
+    ViewData["Title"] = "🃏 Blackjack - Hra";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card bg-dark text-light border-danger">
+                <div class="card-header bg-danger text-white text-center">
+                    <h2>🃏 BLACKJACK</h2>
+                    <p class="mb-0">Sázka: <strong>@ViewBag.BetAmount Kč</strong></p>
+                </div>
+                <div class="card-body">
+                    <!-- Dealer's hand -->
+                    <div class="mb-5">
+                        <h4 class="text-center mb-3">🎩 Dealer</h4>
+                        <div class="d-flex justify-content-center align-items-center">
+                            @if (ViewBag.ShowDealerFirstCardOnly)
+                            {
+                                <div class="playing-card mx-2">@ViewBag.DealerCards[0]</div>
+                                <div class="playing-card mx-2 card-back">🂠</div>
+                            }
+                            else
+                            {
+                                @foreach (var card in ViewBag.DealerCards)
+                                {
+                                    <div class="playing-card mx-2">@card</div>
+                                }
+                            }
+                        </div>
+                        <h5 class="text-center mt-3">
+                            @if (ViewBag.ShowDealerFirstCardOnly)
+                            {
+                                <span>?</span>
+                            }
+                            else
+                            {
+                                <span>Skóre: @ViewBag.DealerScore</span>
+                            }
+                        </h5>
+                    </div>
+
+                    <hr class="border-warning" />
+
+                    <!-- Player's hand -->
+                    <div class="mb-4">
+                        <h4 class="text-center mb-3">👤 Vy</h4>
+                        <div class="d-flex justify-content-center align-items-center">
+                            @foreach (var card in ViewBag.PlayerCards)
+                            {
+                                <div class="playing-card mx-2">@card</div>
+                            }
+                        </div>
+                        <h5 class="text-center mt-3">Skóre: @ViewBag.PlayerScore</h5>
+                    </div>
+
+                    @if (!ViewBag.GameOver)
+                    {
+                        <div class="text-center mt-4">
+                            <form method="post" asp-action="Hit" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-primary btn-lg mx-2">
+                                    🃏 VZÍT KARTU
+                                </button>
+                            </form>
+                            <form method="post" asp-action="Stand" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-warning btn-lg mx-2">
+                                    ✋ ZŮSTAT
+                                </button>
+                            </form>
+                        </div>
+                    }
+
+                    <div class="text-center mt-4">
+                        <p class="text-muted">
+                            Váš zůstatek: <strong>@Context.Session.GetDecimal("Balance") Kč</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .card {
+            box-shadow: 0 0 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .playing-card {
+            width: 80px;
+            height: 120px;
+            background: white;
+            border: 2px solid #333;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: dealCard 0.3s ease-out;
+        }
+
+        .card-back {
+            background: linear-gradient(145deg, #dc3545, #c82333);
+            color: white;
+            font-size: 40px;
+        }
+
+        @@keyframes dealCard {
+            0% {
+                transform: translateY(-50px) rotateX(-90deg);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) rotateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+}

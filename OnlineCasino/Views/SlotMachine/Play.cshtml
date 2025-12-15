@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "🎰 Automat";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-dark text-light border-warning">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h2>🎰 AUTOMAT</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5>📜 Pravidla:</h5>
+                        <ul>
+                            <li>3 stejné symboly 7️⃣ = 10x sázka (JACKPOT!)</li>
+                            <li>3 stejné symboly 💎 = 5x sázka</li>
+                            <li>3 stejné symboly = 3x sázka</li>
+                            <li>2 stejné symboly = 1.5x sázka</li>
+                        </ul>
+                    </div>
+
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-warning text-center">
+                            @ViewBag.Message
+                        </div>
+                    }
+
+                    <form method="post" asp-action="Play" class="mt-4">
+                        <div class="mb-3">
+                            <label class="form-label">Zadejte sázku (10 - 1000 Kč):</label>
+                            <input type="number" name="betAmount" class="form-control" min="10" max="1000" step="10" value="50" required />
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                🎰 ZATOČIT
+                            </button>
+                        </div>
+
+                        @Html.AntiForgeryToken()
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <p class="text-muted">
+                            Váš zůstatek: <strong>@Context.Session.GetDecimal("Balance") Kč</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .card {
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+        }
+    </style>
+}
