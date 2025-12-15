@@ -1,0 +1,56 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1>🎰 Admin Dashboard</h1>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Hráči</div>
+            <div class="card-body">
+                <h5 class="card-title">Správa hráčů</h5>
+                <a href="@Url.Action("Index", "Players", new { area = "Admin" })" class="btn btn-light">Zobrazit</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Hry</div>
+            <div class="card-body">
+                <h5 class="card-title">Správa her</h5>
+                <a href="@Url.Action("Index", "Games", new { area = "Admin" })" class="btn btn-light">Zobrazit</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Sázky</div>
+            <div class="card-body">
+                <h5 class="card-title">Správa sázek</h5>
+                <a href="@Url.Action("Index", "Bets", new { area = "Admin" })" class="btn btn-light">Zobrazit</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Transakce</div>
+            <div class="card-body">
+                <h5 class="card-title">Správa transakcí</h5>
+                <a href="@Url.Action("Index", "Transactions", new { area = "Admin" })" class="btn btn-light">Zobrazit</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-white bg-secondary mb-3">
+            <div class="card-header">Herní Relace</div>
+            <div class="card-body">
+                <h5 class="card-title">Správa relací</h5>
+                <a href="@Url.Action("Index", "GameSessions", new { area = "Admin" })" class="btn btn-light">Zobrazit</a>
+            </div>
+        </div>
+    </div>
+</div>

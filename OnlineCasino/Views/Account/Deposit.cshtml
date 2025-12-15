@@ -1,0 +1,49 @@
+@model OnlineCasino.Application.DTOs.DepositDto
+
+@{
+    ViewData["Title"] = "Vklad kreditu";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h2>💰 Vklad kreditu</h2>
+            </div>
+            <div class="card-body">
+                <form asp-action="Deposit" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <div class="form-group mb-3">
+                        <label asp-for="Amount" class="control-label">Částka (Kč)</label>
+                        <input asp-for="Amount" class="form-control" type="number" step="10" min="10" max="10000" />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                        <small class="form-text text-muted">Minimální vklad: 10 Kč, Maximální vklad: 10 000 Kč</small>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <div class="btn-group w-100" role="group">
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('Amount').value=100">100 Kč</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('Amount').value=500">500 Kč</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('Amount').value=1000">1000 Kč</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('Amount').value=5000">5000 Kč</button>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        💳 Toto je simulovaný vklad. Ve skutečné aplikaci by zde byla platební brána.
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success btn-block">Vložit kredit</button>
+                        <a asp-action="Profile" class="btn btn-secondary btn-block">Zpět na profil</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
