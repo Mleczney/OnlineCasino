@@ -39,6 +39,12 @@
                                 <a class="nav-link text-dark" asp-controller="Bets" asp-action="Play">🎲 Sázka</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="SlotMachine" asp-action="Play">🎰 Automat</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Blackjack" asp-action="Play">🃏 Blackjack</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="BalanceDeposit" asp-action="DepositBalance">💳 Dobít účet</a>
                             </li>
                         }
@@ -59,7 +65,7 @@
                     </ul>
 
                     <ul class="navbar-nav">
-                        @if (Context.Session.GetInt32("PlayerId") != null)
+                        @if (Context.Session.GetString("Username") != null)
                         {
                             <li class="nav-item">
                                 <span class="nav-link text-success">
@@ -70,7 +76,10 @@
                                         <span class="badge bg-warning text-dark ms-1">ADMIN</span>
                                     }
 
-                                    | 💰 <strong>@Context.Session.GetDecimal("Balance") Kč</strong>
+                                    @if (Context.Session.GetInt32("PlayerId") != null)
+                                    {
+                                        <span> | 💰 <strong>@Context.Session.GetDecimal("Balance") Kč</strong></span>
+                                    }
                                 </span>
                             </li>
                             <li class="nav-item">

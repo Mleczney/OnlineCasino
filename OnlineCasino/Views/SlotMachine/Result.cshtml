@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "🎰 Výsledek";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-dark text-light border-warning">
+                <div class="card-header bg-warning text-dark text-center">
+                    <h2>🎰 VÝSLEDEK</h2>
+                </div>
+                <div class="card-body text-center">
+                    @if (ViewBag.IsWin)
+                    {
+                        <div class="alert alert-success">
+                            <h3>@ViewBag.Message</h3>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">
+                            <h3>@ViewBag.Message</h3>
+                        </div>
+                    }
+
+                    <div class="slot-machine my-5">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="reel mx-3">
+                                <div class="reel-symbol">@ViewBag.Reel1</div>
+                            </div>
+                            <div class="reel mx-3">
+                                <div class="reel-symbol">@ViewBag.Reel2</div>
+                            </div>
+                            <div class="reel mx-3">
+                                <div class="reel-symbol">@ViewBag.Reel3</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-info">
+                        <h4>Sázka: <span class="text-warning">@ViewBag.BetAmount Kč</span></h4>
+                        @if (ViewBag.IsWin)
+                        {
+                            <h4>Výhra: <span class="text-success">@ViewBag.WinAmount Kč</span></h4>
+                        }
+                        <h4>Nový zůstatek: <span class="text-info">@ViewBag.NewBalance Kč</span></h4>
+                    </div>
+
+                    <div class="mt-4">
+                        <a asp-action="Play" class="btn btn-warning btn-lg">
+                            🔄 HRÁT ZNOVU
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary btn-lg">
+                            🏠 DOMŮ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .card {
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+        }
+
+        .reel {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            border: 3px solid #ffc107;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .reel-symbol {
+            font-size: 60px;
+            animation: spin 0.5s ease-out;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotateY(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: rotateY(180deg);
+                opacity: 0.5;
+            }
+            100% {
+                transform: rotateY(360deg);
+                opacity: 1;
+            }
+        }
+
+        .result-info h4 {
+            margin: 15px 0;
+        }
+    </style>
+}
