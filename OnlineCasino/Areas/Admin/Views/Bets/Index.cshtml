@@ -1,0 +1,49 @@
+@model IEnumerable<OnlineCasino.Application.DTOs.BetDto>
+
+@{
+    ViewData["Title"] = "Správa sázek";
+}
+
+<h1>Správa sázek</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Hráč</th>
+            <th>Hra</th>
+            <th>Částka sázky</th>
+            <th>Výhra</th>
+            <th>Výsledek</th>
+            <th>Vytvořeno</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.PlayerUsername</td>
+                <td>@item.GameName</td>
+                <td>@item.Amount Kč</td>
+                <td>@(item.WinAmount.HasValue ? $"{item.WinAmount.Value} Kč" : "-")</td>
+                <td>
+                    @if (item.IsWin)
+                    {
+                        <span class="badge bg-success">Výhra</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Prohra</span>
+                    }
+                </td>
+                <td>@item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detail</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Smazat</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

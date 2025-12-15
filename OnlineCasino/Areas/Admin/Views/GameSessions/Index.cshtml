@@ -1,0 +1,46 @@
+@model IEnumerable<OnlineCasino.Domain.Entities.GameSession>
+
+@{
+    ViewData["Title"] = "Správa herních relací";
+}
+
+<h1>Správa herních relací</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID Hráče</th>
+            <th>ID Hry</th>
+            <th>Začátek</th>
+            <th>Konec</th>
+            <th>Počáteční zůstatek</th>
+            <th>Konečný zůstatek</th>
+            <th>Celkem sázek</th>
+            <th>Celkem vsazeno</th>
+            <th>Celkem vyhráno</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.PlayerId</td>
+                <td>@item.GameId</td>
+                <td>@item.StartedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@(item.EndedAt.HasValue ? item.EndedAt.Value.ToString("dd.MM.yyyy HH:mm") : "Aktivní")</td>
+                <td>@item.InitialBalance Kč</td>
+                <td>@(item.FinalBalance.HasValue ? $"{item.FinalBalance.Value} Kč" : "-")</td>
+                <td>@item.TotalBets</td>
+                <td>@item.TotalWagered Kč</td>
+                <td>@item.TotalWon Kč</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detail</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Smazat</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

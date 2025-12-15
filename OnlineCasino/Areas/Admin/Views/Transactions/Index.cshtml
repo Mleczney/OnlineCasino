@@ -1,0 +1,61 @@
+@model IEnumerable<OnlineCasino.Domain.Entities.Transaction>
+
+@{
+    ViewData["Title"] = "Správa transakcí";
+}
+
+<h1>Správa transakcí</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID Hráče</th>
+            <th>Typ</th>
+            <th>Částka</th>
+            <th>Zůstatek před</th>
+            <th>Zůstatek po</th>
+            <th>Popis</th>
+            <th>Vytvořeno</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.PlayerId</td>
+                <td>
+                    @switch (item.Type)
+                    {
+                        case OnlineCasino.Domain.Entities.TransactionType.Deposit:
+                            <span class="badge bg-success">Vklad</span>
+                            break;
+                        case OnlineCasino.Domain.Entities.TransactionType.Withdrawal:
+                            <span class="badge bg-warning">Výběr</span>
+                            break;
+                        case OnlineCasino.Domain.Entities.TransactionType.BetPlaced:
+                            <span class="badge bg-info">Sázka</span>
+                            break;
+                        case OnlineCasino.Domain.Entities.TransactionType.BetWon:
+                            <span class="badge bg-success">Výhra</span>
+                            break;
+                        case OnlineCasino.Domain.Entities.TransactionType.BetLost:
+                            <span class="badge bg-danger">Prohra</span>
+                            break;
+                    }
+                </td>
+                <td>@item.Amount Kč</td>
+                <td>@item.BalanceBefore Kč</td>
+                <td>@item.BalanceAfter Kč</td>
+                <td>@(item.Description ?? "-")</td>
+                <td>@item.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detail</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Smazat</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
