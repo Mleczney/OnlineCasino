@@ -6,10 +6,7 @@ namespace OnlineCasino.Controllers
     {
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("Role") != "Admin")
-                return Unauthorized();
-
-            return View();
+            return RedirectToAction("Index", "Home", new { area = "Admin" });
         }
     }
 }

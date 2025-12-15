@@ -1,0 +1,40 @@
+@model IEnumerable<OnlineCasino.Domain.Entities.Game>
+
+@{
+    ViewData["Title"] = "Správa her";
+}
+
+<h1>Správa her</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Vytvořit novou hru</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Název</th>
+            <th>Minimální sázka</th>
+            <th>Maximální sázka</th>
+            <th>Aktivní</th>
+            <th>Akce</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>@item.MinBet Kč</td>
+                <td>@item.MaxBet Kč</td>
+                <td>@(item.IsActive ? "✅" : "❌")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detail</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Upravit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Smazat</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
