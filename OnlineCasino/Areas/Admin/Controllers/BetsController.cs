@@ -30,7 +30,7 @@ namespace OnlineCasino.Areas.Admin.Controllers
                 WinAmount = b.WinAmount,
                 IsWin = b.IsWin,
                 CreatedAt = b.CreatedAt
-            });
+            }).ToList();
             return View(betDtos);
         }
 
