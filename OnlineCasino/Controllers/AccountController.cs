@@ -120,6 +120,13 @@ namespace OnlineCasino.Controllers
                                 HttpContext.Session.SetString("Balance", player.Balance.ToString());
                                 HttpContext.Session.SetString("Role", "Player");
                             }
+                            else
+                            {
+                                // Player role but no player record - sign out and show error
+                                await _signInManager.SignOutAsync();
+                                ModelState.AddModelError(string.Empty, "Profil hráče nebyl nalezen. Kontaktujte administrátora.");
+                                return View(dto);
+                            }
                         }
                     }
 
