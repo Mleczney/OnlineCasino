@@ -1,0 +1,68 @@
+@model OnlineCasino.Domain.Entities.Player
+
+@{
+    ViewData["Title"] = "Můj profil";
+}
+
+<h1>👤 Můj profil</h1>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3>Informace o účtu</h3>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Username</dt>
+                    <dd class="col-sm-8">@Model.Username</dd>
+                    
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+                    
+                    <dt class="col-sm-4">Aktuální balance</dt>
+                    <dd class="col-sm-8"><strong>@Model.Balance Kč</strong> 💰</dd>
+                    
+                    <dt class="col-sm-4">Registrován</dt>
+                    <dd class="col-sm-8">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+                </dl>
+                
+                <div class="mt-3">
+                    <a asp-action="Deposit" class="btn btn-success">💰 Vložit kredit</a>
+                    <a asp-controller="Bets" asp-action="Play" class="btn btn-primary">🎰 Hrát hru</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h3>Moje statistiky</h3>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-6">Počet sázek</dt>
+                    <dd class="col-sm-6">@(Model.Bets?.Count ?? 0)</dd>
+                    
+                    <dt class="col-sm-6">Počet transakcí</dt>
+                    <dd class="col-sm-6">@(Model.Transactions?.Count ?? 0)</dd>
+                    
+                    <dt class="col-sm-6">Herních relací</dt>
+                    <dd class="col-sm-6">@(Model.GameSessions?.Count ?? 0)</dd>
+                </dl>
+                
+                <div class="mt-3">
+                    <a asp-controller="Bets" asp-action="Index" class="btn btn-secondary">Zobrazit moje sázky</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success mt-3">
+        @TempData["Message"]
+    </div>
+}
