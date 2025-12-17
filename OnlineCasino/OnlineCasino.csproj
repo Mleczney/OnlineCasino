@@ -22,4 +22,10 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OnlineCasino.Domain\OnlineCasino.Domain.csproj" />
+    <ProjectReference Include="..\OnlineCasino.Application\OnlineCasino.Application.csproj" />
+    <ProjectReference Include="..\OnlineCasino.Infrastructure\OnlineCasino.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

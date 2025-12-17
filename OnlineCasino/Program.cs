@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineCasino.Application.Interfaces;
-using OnlineCasino.Application.Services;
 using OnlineCasino.Infrastructure.Data;
+using OnlineCasino.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
