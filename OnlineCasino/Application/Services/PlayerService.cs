@@ -80,16 +80,18 @@ namespace OnlineCasino.Application.Services
             {
                 // Delete related entities first to avoid foreign key constraint violations
                 // Use ExecuteDeleteAsync for better performance (direct SQL DELETE without loading entities)
-                await _context.Transactions
-                    .Where(t => t.PlayerId == id)
-                    .ExecuteDeleteAsync();
-
+                // Order matters: delete children before parents (Bets reference GameSessions)
+                
                 await _context.Bets
                     .Where(b => b.PlayerId == id)
                     .ExecuteDeleteAsync();
 
                 await _context.GameSessions
                     .Where(gs => gs.PlayerId == id)
+                    .ExecuteDeleteAsync();
+
+                await _context.Transactions
+                    .Where(t => t.PlayerId == id)
                     .ExecuteDeleteAsync();
 
                 // Now delete the player
