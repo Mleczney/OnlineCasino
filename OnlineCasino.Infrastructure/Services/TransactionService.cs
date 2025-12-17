@@ -3,7 +3,7 @@ using OnlineCasino.Application.Interfaces;
 using OnlineCasino.Domain.Entities;
 using OnlineCasino.Infrastructure.Data;
 
-namespace OnlineCasino.Application.Services
+namespace OnlineCasino.Infrastructure.Services
 {
     public class TransactionService : ITransactionService
     {
