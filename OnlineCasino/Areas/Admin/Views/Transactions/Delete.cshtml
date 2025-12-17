@@ -1,0 +1,62 @@
+@model OnlineCasino.Domain.Entities.Transaction
+
+@{
+    ViewData["Title"] = "Smazat transakci";
+}
+
+<h1>Smazat transakci</h1>
+
+<h3>Opravdu chcete smazat tuto transakci?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">ID Hráče</dt>
+        <dd class="col-sm-9">@Model.PlayerId</dd>
+
+        <dt class="col-sm-3">Typ</dt>
+        <dd class="col-sm-9">
+            @switch (Model.Type)
+            {
+                case OnlineCasino.Domain.Entities.TransactionType.Deposit:
+                    <span class="badge bg-success">Vklad</span>
+                    break;
+                case OnlineCasino.Domain.Entities.TransactionType.Withdrawal:
+                    <span class="badge bg-warning">Výběr</span>
+                    break;
+                case OnlineCasino.Domain.Entities.TransactionType.BetPlaced:
+                    <span class="badge bg-info">Sázka</span>
+                    break;
+                case OnlineCasino.Domain.Entities.TransactionType.BetWon:
+                    <span class="badge bg-success">Výhra</span>
+                    break;
+                case OnlineCasino.Domain.Entities.TransactionType.BetLost:
+                    <span class="badge bg-danger">Prohra</span>
+                    break;
+            }
+        </dd>
+
+        <dt class="col-sm-3">Částka</dt>
+        <dd class="col-sm-9">@Model.Amount Kč</dd>
+
+        <dt class="col-sm-3">Zůstatek před</dt>
+        <dd class="col-sm-9">@Model.BalanceBefore Kč</dd>
+
+        <dt class="col-sm-3">Zůstatek po</dt>
+        <dd class="col-sm-9">@Model.BalanceAfter Kč</dd>
+
+        <dt class="col-sm-3">Popis</dt>
+        <dd class="col-sm-9">@(Model.Description ?? "-")</dd>
+
+        <dt class="col-sm-3">Vytvořeno</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Smazat</button>
+        <a asp-action="Index" class="btn btn-secondary">Zpět na seznam</a>
+    </form>
+</div>

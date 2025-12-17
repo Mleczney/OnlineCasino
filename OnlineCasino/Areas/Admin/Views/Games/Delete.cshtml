@@ -1,0 +1,37 @@
+@model OnlineCasino.Domain.Entities.Game
+
+@{
+    ViewData["Title"] = "Smazat hru";
+}
+
+<h1>Smazat hru</h1>
+
+<h3>Opravdu chcete smazat tuto hru?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">Název</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">Popis</dt>
+        <dd class="col-sm-9">@(Model.Description ?? "-")</dd>
+
+        <dt class="col-sm-3">Minimální sázka</dt>
+        <dd class="col-sm-9">@Model.MinBet Kč</dd>
+
+        <dt class="col-sm-3">Maximální sázka</dt>
+        <dd class="col-sm-9">@Model.MaxBet Kč</dd>
+
+        <dt class="col-sm-3">Aktivní</dt>
+        <dd class="col-sm-9">@(Model.IsActive ? "✅ Ano" : "❌ Ne")</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Smazat</button>
+        <a asp-action="Index" class="btn btn-secondary">Zpět na seznam</a>
+    </form>
+</div>
