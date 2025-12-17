@@ -20,28 +20,27 @@ Online Casino je webová aplikace umožňující uživatelům hrát jednoduché 
 - Používá standardní MVC pattern s Controllers, Views a Models
 
 ### ✅ 1.2 Vícevrstvá architektura
-Projekt implementuje čtyři vrstvy:
+Projekt implementuje čtyři vrstvy jako **samostatné knihovní projekty** (Class Libraries):
 
-#### **Presentation Layer** (`Controllers/`, `Views/`, `Areas/`)
+#### **Presentation Layer** (`OnlineCasino` projekt)
 - MVC Controllers pro obsluhu HTTP requestů
 - Razor Views pro zobrazení UI
 - Admin Area pro správu systému
 
-#### **Application Layer** (`Application/`)
-- **Services** (`Application/Services/`) - Obsahuje business logiku
-- **Interfaces** (`Application/Interfaces/`) - Definuje kontrakty pro služby
-- **DTOs** (`Application/DTOs/`) - Data Transfer Objects pro přenos dat mezi vrstvami
-- **Validation** (`Application/Validation/`) - Vlastní validační atributy
+#### **Application Layer** (`OnlineCasino.Application` knihovna)
+- **Interfaces** (`Interfaces/`) - Definuje kontrakty pro služby
+- **DTOs** (`DTOs/`) - Data Transfer Objects pro přenos dat mezi vrstvami
+- **Validation** (`Validation/`) - Vlastní validační atributy
 
-#### **Infrastructure Layer** (`Infrastructure/`)
-- **Data** (`Infrastructure/Data/`) - DbContext, migrace, seed data
-- **Repositories** (implicitně přes EF Core)
+#### **Infrastructure Layer** (`OnlineCasino.Infrastructure` knihovna)
+- **Data** (`Data/`) - DbContext, migrace, seed data
+- **Services** (`Services/`) - Implementace business logiky (PlayerService, GameService, BetService, atd.)
 
-#### **Domain Layer** (`Domain/`)
-- **Entities** (`Domain/Entities/`) - Doménové entity (Player, Game, Bet, Transaction, GameSession)
+#### **Domain Layer** (`OnlineCasino.Domain` knihovna)
+- **Entities** (`Entities/`) - Doménové entity (Player, Game, Bet, Transaction, GameSession)
 
 ### ✅ 1.3 Služby (Services)
-Veškerá funkcionalita je implementována pomocí služeb:
+Veškerá funkcionalita je implementována pomocí služeb v `OnlineCasino.Infrastructure` projektu:
 - `IPlayerService` / `PlayerService` - Správa hráčů
 - `IGameService` / `GameService` - Správa her
 - `IBetService` / `BetService` - Správa sázek
@@ -50,9 +49,12 @@ Veškerá funkcionalita je implementována pomocí služeb:
 
 **Kontrollery neobsahují business logiku** - vše je delegováno na služby.
 
-### ✅ 1.4 Oddělení vrstev
-- **Presentation vrstva** NIKDY přímo nepoužívá Infrastructure vrstvu (pouze v Program.cs pro konfiguraci)
-- Controllers používají pouze Application vrstvu (Services)
+### ✅ 1.4 Oddělení vrstev pomocí samostatných projektů
+- **Každá vrstva je samostatný Class Library projekt** - což zajišťuje správné oddělení závislostí
+- **Presentation vrstva** (`OnlineCasino`) odkazuje na Application a Infrastructure
+- **Application vrstva** (`OnlineCasino.Application`) odkazuje pouze na Domain
+- **Infrastructure vrstva** (`OnlineCasino.Infrastructure`) odkazuje na Domain a Application
+- **Domain vrstva** (`OnlineCasino.Domain`) nemá žádné závislosti na ostatních vrstvách
 - Není žádný SQL kód v controllerech či views - vše přes EF Core
 
 ---
@@ -285,9 +287,21 @@ Projekt pokrývá základní funkcionalitu online casina:
 
 ## 8. Struktura projektu
 
+Projekt je nyní rozdělen do **4 samostatných Class Library projektů** pro správné vícevrstvé oddělení:
+
 ```
-OnlineCasino/
-├── Application/           # Application Layer
+OnlineCasino.sln
+│
+├── OnlineCasino.Domain/              # Domain Layer (Class Library)
+│   ├── Entities/
+│   │   ├── Player.cs
+│   │   ├── Game.cs
+│   │   ├── Bet.cs
+│   │   ├── Transaction.cs
+│   │   └── GameSession.cs
+│   └── OnlineCasino.Domain.csproj
+│
+├── OnlineCasino.Application/         # Application Layer (Class Library)
 │   ├── DTOs/
 │   │   ├── PlayerDto.cs
 │   │   ├── GameDto.cs
@@ -297,47 +311,50 @@ OnlineCasino/
 │   │   ├── IPlayerService.cs
 │   │   ├── IGameService.cs
 │   │   └── ...
+│   ├── Validation/
+│   │   └── MinimumBalanceAttribute.cs
+│   └── OnlineCasino.Application.csproj
+│       └── Odkazy: OnlineCasino.Domain
+│
+├── OnlineCasino.Infrastructure/      # Infrastructure Layer (Class Library)
+│   ├── Data/
+│   │   ├── CasinoContext.cs
+│   │   └── SeedData.cs
 │   ├── Services/
 │   │   ├── PlayerService.cs
 │   │   ├── GameService.cs
-│   │   └── ...
-│   └── Validation/
-│       └── MinimumBalanceAttribute.cs
+│   │   ├── BetService.cs
+│   │   ├── TransactionService.cs
+│   │   └── GameSessionService.cs
+│   └── OnlineCasino.Infrastructure.csproj
+│       └── Odkazy: OnlineCasino.Domain, OnlineCasino.Application
 │
-├── Domain/                # Domain Layer
-│   └── Entities/
-│       ├── Player.cs
-│       ├── Game.cs
-│       ├── Bet.cs
-│       ├── Transaction.cs
-│       └── GameSession.cs
-│
-├── Infrastructure/        # Infrastructure Layer
-│   └── Data/
-│       ├── CasinoContext.cs
-│       └── SeedData.cs
-│
-├── Areas/                 # Presentation Layer - Admin Area
-│   └── Admin/
-│       ├── Controllers/
-│       └── Views/
-│
-├── Controllers/           # Presentation Layer - Main Controllers
-│   ├── HomeController.cs
-│   ├── AccountController.cs
-│   ├── BetsController.cs
-│   ├── GamesController.cs
-│   └── PlayersController.cs
-│
-├── Views/                 # Presentation Layer - Views
-│   ├── Home/
-│   ├── Account/
-│   ├── Bets/
-│   └── ...
-│
-├── Migrations/            # EF Core Migrations
-└── Program.cs             # Application Entry Point
+└── OnlineCasino/                     # Presentation Layer (Web Application)
+    ├── Areas/
+    │   └── Admin/
+    │       ├── Controllers/
+    │       └── Views/
+    ├── Controllers/
+    │   ├── HomeController.cs
+    │   ├── AccountController.cs
+    │   ├── BetsController.cs
+    │   └── ...
+    ├── Views/
+    │   ├── Home/
+    │   ├── Account/
+    │   ├── Bets/
+    │   └── ...
+    ├── Migrations/
+    ├── Program.cs
+    └── OnlineCasino.csproj
+        └── Odkazy: OnlineCasino.Domain, OnlineCasino.Application, OnlineCasino.Infrastructure
 ```
+
+### Závislosti mezi projekty:
+- `OnlineCasino` (Web) → `OnlineCasino.Infrastructure` + `OnlineCasino.Application` + `OnlineCasino.Domain`
+- `OnlineCasino.Infrastructure` → `OnlineCasino.Application` + `OnlineCasino.Domain`
+- `OnlineCasino.Application` → `OnlineCasino.Domain`
+- `OnlineCasino.Domain` → **žádné závislosti** (čistá doménová vrstva)
 
 ---
 
@@ -378,9 +395,13 @@ dotnet ef database update
 Projekt splňuje všechny požadavky:
 
 ✅ ASP.NET Core MVC 9.0  
-✅ Vícevrstvá architektura (Presentation, Application, Infrastructure, Domain)  
+✅ **Vícevrstvá architektura jako samostatné projekty** (4 Class Library projekty)
+  - OnlineCasino.Domain (Domain Layer)
+  - OnlineCasino.Application (Application Layer) 
+  - OnlineCasino.Infrastructure (Infrastructure Layer)
+  - OnlineCasino (Presentation Layer)  
 ✅ Všechna funkcionalita přes Services  
-✅ Oddělení vrstev (Presentation nepoužívá Infrastructure)  
+✅ **Správné oddělení vrstev pomocí projektových referencí**  
 ✅ Code-First s migracemi  
 ✅ Minimálně 5 entit + ViewModels/DTOs  
 ✅ Cizí klíče mezi entitami  
