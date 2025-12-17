@@ -74,6 +74,26 @@ namespace OnlineCasino.Application.Services
             var player = await _context.Players.FindAsync(id);
             if (player == null) return false;
 
+            // Delete related entities first to avoid foreign key constraint violations
+            // Delete transactions
+            var transactions = await _context.Transactions
+                .Where(t => t.PlayerId == id)
+                .ToListAsync();
+            _context.Transactions.RemoveRange(transactions);
+
+            // Delete bets
+            var bets = await _context.Bets
+                .Where(b => b.PlayerId == id)
+                .ToListAsync();
+            _context.Bets.RemoveRange(bets);
+
+            // Delete game sessions
+            var gameSessions = await _context.GameSessions
+                .Where(gs => gs.PlayerId == id)
+                .ToListAsync();
+            _context.GameSessions.RemoveRange(gameSessions);
+
+            // Now delete the player
             _context.Players.Remove(player);
             await _context.SaveChangesAsync();
             return true;
