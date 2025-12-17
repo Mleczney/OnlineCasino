@@ -74,9 +74,38 @@ namespace OnlineCasino.Application.Services
             var player = await _context.Players.FindAsync(id);
             if (player == null) return false;
 
-            _context.Players.Remove(player);
-            await _context.SaveChangesAsync();
-            return true;
+            // Use a transaction to ensure atomicity
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Delete related entities first to avoid foreign key constraint violations
+                // Use ExecuteDeleteAsync for better performance (direct SQL DELETE without loading entities)
+                // Order matters: delete children before parents (Bets reference GameSessions)
+                
+                await _context.Bets
+                    .Where(b => b.PlayerId == id)
+                    .ExecuteDeleteAsync();
+
+                await _context.GameSessions
+                    .Where(gs => gs.PlayerId == id)
+                    .ExecuteDeleteAsync();
+
+                await _context.Transactions
+                    .Where(t => t.PlayerId == id)
+                    .ExecuteDeleteAsync();
+
+                // Now delete the player
+                _context.Players.Remove(player);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<Player?> AuthenticateAsync(string username, string password)
