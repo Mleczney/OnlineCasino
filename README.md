@@ -13,12 +13,40 @@ Webová aplikace pro online casino vytvořená v ASP.NET Core MVC 9.0 s vícevrs
 
 ## 🏗️ Architektura
 
-Projekt implementuje **čtyřvrstvou architekturu**:
+Projekt implementuje **čtyřvrstvou architekturu** jako **samostatné Class Library projekty**:
 
-- **Presentation Layer** - Controllers, Views, Areas
-- **Application Layer** - Services, DTOs, Interfaces, Validation
-- **Infrastructure Layer** - EF Core, DbContext, Repositories
-- **Domain Layer** - Entity models
+```
+📦 OnlineCasino.sln
+├── 🎯 OnlineCasino (Web Application)
+│   └── Presentation Layer - Controllers, Views, Areas
+├── 📚 OnlineCasino.Application (Class Library)
+│   └── Application Layer - DTOs, Interfaces, Validation
+├── 🔧 OnlineCasino.Infrastructure (Class Library)
+│   └── Infrastructure Layer - EF Core, DbContext, Services
+└── 📋 OnlineCasino.Domain (Class Library)
+    └── Domain Layer - Entity models
+```
+
+### Závislosti mezi projekty:
+```
+OnlineCasino (Web) 
+    ↓ references
+    ├─→ OnlineCasino.Infrastructure
+    ├─→ OnlineCasino.Application
+    └─→ OnlineCasino.Domain
+
+OnlineCasino.Infrastructure
+    ↓ references
+    ├─→ OnlineCasino.Application
+    └─→ OnlineCasino.Domain
+
+OnlineCasino.Application
+    ↓ references
+    └─→ OnlineCasino.Domain
+
+OnlineCasino.Domain
+    └─→ (žádné závislosti)
+```
 
 ## 🚀 Technologie
 
@@ -55,12 +83,13 @@ Projekt implementuje **čtyřvrstvou architekturu**:
 git clone https://github.com/Mleczney/OnlineCasino.git
 
 # 2. Přejít do složky projektu
-cd OnlineCasino/OnlineCasino
+cd OnlineCasino
 
-# 3. Obnovit balíčky
+# 3. Obnovit balíčky pro celé solution (všechny 4 projekty)
 dotnet restore
 
-# 4. Vytvořit databázi a aplikovat migrace
+# 4. Vytvořit databázi a aplikovat migrace (z web projektu)
+cd OnlineCasino
 # POZNÁMKA: Pokud databáze již existuje z předchozích pokusů, nejprve ji smažte:
 # dotnet ef database drop --force
 dotnet ef database update
