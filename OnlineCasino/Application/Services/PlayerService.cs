@@ -74,29 +74,36 @@ namespace OnlineCasino.Application.Services
             var player = await _context.Players.FindAsync(id);
             if (player == null) return false;
 
-            // Delete related entities first to avoid foreign key constraint violations
-            // Delete transactions
-            var transactions = await _context.Transactions
-                .Where(t => t.PlayerId == id)
-                .ToListAsync();
-            _context.Transactions.RemoveRange(transactions);
+            // Use a transaction to ensure atomicity
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Delete related entities first to avoid foreign key constraint violations
+                // Use ExecuteDeleteAsync for better performance (direct SQL DELETE without loading entities)
+                await _context.Transactions
+                    .Where(t => t.PlayerId == id)
+                    .ExecuteDeleteAsync();
 
-            // Delete bets
-            var bets = await _context.Bets
-                .Where(b => b.PlayerId == id)
-                .ToListAsync();
-            _context.Bets.RemoveRange(bets);
+                await _context.Bets
+                    .Where(b => b.PlayerId == id)
+                    .ExecuteDeleteAsync();
 
-            // Delete game sessions
-            var gameSessions = await _context.GameSessions
-                .Where(gs => gs.PlayerId == id)
-                .ToListAsync();
-            _context.GameSessions.RemoveRange(gameSessions);
+                await _context.GameSessions
+                    .Where(gs => gs.PlayerId == id)
+                    .ExecuteDeleteAsync();
 
-            // Now delete the player
-            _context.Players.Remove(player);
-            await _context.SaveChangesAsync();
-            return true;
+                // Now delete the player
+                _context.Players.Remove(player);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<Player?> AuthenticateAsync(string username, string password)
