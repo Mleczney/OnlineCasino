@@ -1,0 +1,31 @@
+@model OnlineCasino.Domain.Entities.Player
+
+@{
+    ViewData["Title"] = "Detail hráče";
+}
+
+<h1>Detail hráče</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">Username</dt>
+        <dd class="col-sm-9">@Model.Username</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Balance</dt>
+        <dd class="col-sm-9">@Model.Balance Kč</dd>
+
+        <dt class="col-sm-3">Vytvořeno</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Upravit</a>
+    <a asp-action="Index" class="btn btn-secondary">Zpět na seznam</a>
+</div>
