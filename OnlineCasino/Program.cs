@@ -18,7 +18,8 @@ builder.Services.AddSession(options =>
 
 // Configure DbContext
 builder.Services.AddDbContext<CasinoContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CasinoContext")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CasinoContext"),
+        sqlOptions => sqlOptions.MigrationsAssembly("OnlineCasino")));
 
 // Configure Identity
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -69,18 +70,26 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-// Seed roles and admin user
+// Apply pending migrations and seed roles and admin user
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
+        // Apply pending database migrations (only in development)
+        if (app.Environment.IsDevelopment())
+        {
+            var context = services.GetRequiredService<CasinoContext>();
+            await context.Database.MigrateAsync();
+        }
+        
+        // Seed roles and admin user
         await OnlineCasino.Infrastructure.Data.SeedData.InitializeAsync(services);
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred seeding the DB.");
+        logger.LogError(ex, "An error occurred during database migration or seeding.");
     }
 }
 
