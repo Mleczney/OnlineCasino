@@ -76,9 +76,12 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        // Apply pending database migrations
-        var context = services.GetRequiredService<CasinoContext>();
-        await context.Database.MigrateAsync();
+        // Apply pending database migrations (only in development)
+        if (app.Environment.IsDevelopment())
+        {
+            var context = services.GetRequiredService<CasinoContext>();
+            await context.Database.MigrateAsync();
+        }
         
         // Seed roles and admin user
         await OnlineCasino.Infrastructure.Data.SeedData.InitializeAsync(services);
@@ -86,7 +89,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred seeding the DB.");
+        logger.LogError(ex, "An error occurred during database migration or seeding.");
     }
 }
 
